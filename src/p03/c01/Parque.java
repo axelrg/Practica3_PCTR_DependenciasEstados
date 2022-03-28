@@ -27,7 +27,7 @@ public class Parque implements IParque{
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
 		
-		// TODO
+		comprobarAntesDeEntrar();
 				
 		
 		// Aumentamos el contador total y el individual
@@ -37,10 +37,7 @@ public class Parque implements IParque{
 		// Imprimimos el estado del parque
 		imprimirInfo(puerta, "Entrada");
 		
-		// TODO
-		
-		
-		// TODO
+		checkInvariante();
 		
 	}
 	
@@ -50,6 +47,23 @@ public class Parque implements IParque{
 
 	@Override
 	public void salirDelParque(String puerta){
+
+		if (contadoresPersonasPuerta.get(puerta) == null){
+			contadoresPersonasPuerta.put(puerta, 0);
+		}
+		
+
+		comprobarAntesDeSalir();
+		
+
+		contadorPersonasTotales--;		
+		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)-1);
+		
+		// Imprimimos el estado del parque
+		imprimirInfo(puerta, "Entrada");
+		
+		checkInvariante();
+				
 
 	}
 	
@@ -96,6 +110,7 @@ public class Parque implements IParque{
 
 	protected void comprobarAntesDeSalir(){		// TODO
 		if (contadorPersonasTotales == 0){
+	
 
 		}
 
