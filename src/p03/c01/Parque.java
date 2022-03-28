@@ -9,6 +9,7 @@ public class Parque implements IParque{
 	// TODO 
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
+	private static final int AFOROMAX = 50;
 	
 	
 	public Parque() {	// TODO
@@ -74,7 +75,8 @@ public class Parque implements IParque{
 	
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-		// TODO 
+		assert sumarContadoresPuerta() <= AFOROMAX : "Se ha superado el aforo de 50 personas";
+		// TODO
 		// TODO
 		
 		
@@ -82,12 +84,21 @@ public class Parque implements IParque{
 	}
 
 	protected void comprobarAntesDeEntrar(){	// TODO
+		if (contadorPersonasTotales == AFOROMAX){
+
+		}
+
+
 		//
 		// TODO
 		//
 	}
 
 	protected void comprobarAntesDeSalir(){		// TODO
+		if (contadorPersonasTotales == 0){
+
+		}
+
 		//
 		// TODO
 		//

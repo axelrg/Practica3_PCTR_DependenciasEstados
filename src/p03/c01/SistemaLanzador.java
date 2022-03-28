@@ -7,8 +7,10 @@ public class SistemaLanzador {
 		char letra_puerta = 'A';
 		
 		System.out.println("¡Parque abierto!");
-		
-		for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+
+
+		//for (int i = 0; i < Integer.parseInt(args[0]); i++) {
+		for (int i = 0; i < 5; i++) {
 			
 			String puerta = ""+((char) (letra_puerta++));
 			
