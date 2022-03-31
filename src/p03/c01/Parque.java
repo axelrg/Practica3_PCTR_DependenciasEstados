@@ -5,17 +5,14 @@ import java.util.Hashtable;
 
 public class Parque implements IParque{
 
-
-	// TODO 
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
 	private static final int AFOROMAX = 50;
 	
 	
-	public Parque() {	// TODO
+	public Parque() {
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
-		// TODO
 	}
 
 
@@ -42,30 +39,27 @@ public class Parque implements IParque{
         this.notify();
 
     }
-	
-	// 
-	// TODO Método salirDelParque
-	//
+
 
 	@Override
-	public void salirDelParque(String puerta){
-
-		if (contadoresPersonasPuerta.get(puerta) == null){
-			contadoresPersonasPuerta.put(puerta, 0);
-		}
-		
+	public synchronized void salirDelParque(String puerta){
+		// Si no hay entradas por esa puerta, inicializamos
+		contadoresPersonasPuerta.putIfAbsent(puerta, 0);
 
 		comprobarAntesDeSalir();
-		
-		
-		contadorPersonasTotales--;		
+
+
+		// Decrementamos el contador total y el individual
+		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)-1);
-		
+
+		checkInvariante();
+
+
 		// Imprimimos el estado del parque
 		imprimirInfo(puerta, "Salida");
-		
-		checkInvariante();
-				
+
+		this.notify();
 
 	}
 	
@@ -92,11 +86,7 @@ public class Parque implements IParque{
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
 		assert sumarContadoresPuerta() <= AFOROMAX : "Se ha superado el aforo de 50 personas";
-		// TODO
-		// TODO
-		
-		
-		
+		assert contadorPersonasTotales >= 0: "No puede haber personas negativas en el parque";
 	}
 
 	protected void comprobarAntesDeEntrar(){
@@ -109,15 +99,14 @@ public class Parque implements IParque{
         }
     }
 
-	protected void comprobarAntesDeSalir(){		// TODO
-		if (contadorPersonasTotales == 0){
-	
-
+	protected void comprobarAntesDeSalir(){
+		while (contadorPersonasTotales <= 0){
+			try {
+				wait();
+			}catch (InterruptedException exc){
+				exc.printStackTrace();
+			}
 		}
-
-		//
-		// TODO
-		//
 	}
 
 
