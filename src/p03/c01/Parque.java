@@ -20,26 +20,28 @@ public class Parque implements IParque{
 
 
 	@Override
-	public void entrarAlParque(String puerta){		// TODO
-		
-		// Si no hay entradas por esa puerta, inicializamos
-		if (contadoresPersonasPuerta.get(puerta) == null){
-			contadoresPersonasPuerta.put(puerta, 0);
-		}
-		
-		comprobarAntesDeEntrar();
-				
-		
-		// Aumentamos el contador total y el individual
-		contadorPersonasTotales++;		
-		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
-		
-		// Imprimimos el estado del parque
-		imprimirInfo(puerta, "Entrada");
-		
-		checkInvariante();
-		
-	}
+    public synchronized void entrarAlParque(String puerta){
+
+        // Si no hay entradas por esa puerta, inicializamos
+        contadoresPersonasPuerta.putIfAbsent(puerta, 0);
+
+        comprobarAntesDeEntrar();
+
+
+        // Aumentamos el contador total y el individual
+        contadorPersonasTotales++;
+        contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
+
+        checkInvariante();
+
+
+        // Imprimimos el estado del parque
+        imprimirInfo(puerta, "Entrada");
+
+        //No utilizamos all ya que solamente va a entrar o salir uno despues de entrar o salir uno
+        this.notify();
+
+    }
 	
 	// 
 	// TODO Método salirDelParque
@@ -55,12 +57,12 @@ public class Parque implements IParque{
 
 		comprobarAntesDeSalir();
 		
-
+		
 		contadorPersonasTotales--;		
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)-1);
 		
 		// Imprimimos el estado del parque
-		imprimirInfo(puerta, "Entrada");
+		imprimirInfo(puerta, "Salida");
 		
 		checkInvariante();
 				
@@ -97,16 +99,15 @@ public class Parque implements IParque{
 		
 	}
 
-	protected void comprobarAntesDeEntrar(){	// TODO
-		if (contadorPersonasTotales == AFOROMAX){
-
-		}
-
-
-		//
-		// TODO
-		//
-	}
+	protected void comprobarAntesDeEntrar(){
+        while (contadorPersonasTotales >= AFOROMAX){
+            try {
+                wait();
+            }catch (InterruptedException exc){
+                exc.printStackTrace();
+            }
+        }
+    }
 
 	protected void comprobarAntesDeSalir(){		// TODO
 		if (contadorPersonasTotales == 0){
